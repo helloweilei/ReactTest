@@ -1,39 +1,49 @@
 import React from 'react';
 import './style.less';
-import { getSongCategoies } from '../../api/Api';
 import Logo from './NavLeftLogo';
 import { Menu, Icon } from 'antd';
 import { NavLink as Link } from 'react-router-dom';
 import { withRouter } from 'react-router';
+import menus from '../../config/navmenu';
 
 const { SubMenu } = Menu;
 class NavLeft extends React.Component {
     constructor() {
         super();
         this.state = {
-            theme: 'dark',
-            categories: []
+            theme: 'dark'
         }
-    }
-    componentDidMount() {
-        getSongCategoies().then(categories => {
-            console.log(categories)
-            this.setState({ categories })
-        })
+        this.menuNodes = this.getMenuNodes(menus)
     }
     getSelectedKey() {
-        console.log(this.props.location)
-        let selectedKey = this.props.location.pathname
-        if (selectedKey.startsWith('/')) {
-            selectedKey = selectedKey.slice(1)
-        }
-        if (selectedKey === '') {
-            selectedKey = 'home'
-        }
-        return selectedKey
+        let pathname = this.props.location.pathname
+        return menus.find(menu => menu.path === pathname).key
     }
-    getOpenKey() {
-
+    getMenuNodes(menus = []) {
+        return menus.map(item => {
+            if (item.children) {
+                return (
+                    <SubMenu
+                        key={item.key}
+                        title={
+                            <span>
+                                <Icon type={item.icon} />
+                                <span>{item.title}</span>
+                            </span>
+                        }
+                    >{ this.getMenuNodes(item.children) }</SubMenu>
+                )
+            } else {
+                return (
+                    <Menu.Item key={item.key}>
+                        <Link to={item.path}>
+                            <Icon type={item.icon}></Icon>
+                            <span>{item.title}</span>
+                        </Link>
+                    </Menu.Item>
+                )
+            }
+        })
     }
     render() {
         let selectedKey = this.getSelectedKey()
@@ -44,34 +54,9 @@ class NavLeft extends React.Component {
                     theme={this.state.theme}
                     onClick={this.handleClick}
                     selectedKeys={[selectedKey]}
-                    openKeys={[this.getOpenKey()]}
                     mode="inline"
                 >
-                    <Menu.Item key="home">
-                        <Link to="/">
-                            <Icon type="home"></Icon>
-                            <span>首页</span>
-                        </Link>
-                    </Menu.Item>
-                    <SubMenu
-                        key="catigory"
-                        title={
-                            <span>
-                                <Icon type="appstore" />
-                                <span>歌曲分类</span>
-                            </span>
-                        }
-                    >
-                        { this.state.categories.map(category => {
-                            return <Menu.Item key="1">Option 1</Menu.Item>
-                        }) }
-                    </SubMenu>
-                    <Menu.Item key="user">
-                    <Link to="/user">
-                        <Icon type="user"></Icon>
-                        <span>用户设置</span>
-                    </Link>
-                    </Menu.Item>
+                    {this.menuNodes}
                 </Menu>
             </div>
         )

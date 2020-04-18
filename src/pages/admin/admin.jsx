@@ -9,7 +9,7 @@ import BaseHeader from "../../components/header";
 
 import { Route, Switch, Redirect } from 'react-router-dom';
 
-const { Sider, Header, Content, Footer } = Layout;
+const { Sider, Content, Footer } = Layout;
 
 function Admin() {
   return (
@@ -18,9 +18,7 @@ function Admin() {
         <NavLeft/>
       </Sider>
       <Layout>
-        <Header>
-          <BaseHeader/>
-        </Header>
+        <BaseHeader style={{padding: 0}}/>
         <Content>
           <div className='admin-content'>
             <Switch>
