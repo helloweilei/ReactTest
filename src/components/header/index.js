@@ -1,15 +1,23 @@
 import React from 'react';
-import { Button } from 'antd';
+import { Avatar } from 'antd';
+import { Link } from 'react-router-dom';
+
+import userImage from '../../assets/user.jpg';
+import "./style.less";
 
 export default class Header extends React.Component {
-    clickHandler() {
-        console.log('clicked!')
-    }
     render() {
         return (
-            <header>this is header.
-                <Button onClick={() => this.clickHandler()}>Click Me!</Button>
-            </header>
+            <div className="header-user">
+                <div className="user-info">
+                    <Link to="/user">
+                        <Avatar size="large" src={userImage} />
+                        <span style={{ fontWeight: 'bold', margin: '0 10px 0 6px', color: '#444' }}>Charlie</span>
+                    </Link>
+                </div>
+                <Link to="/login" style={{ textDecoration: 'underline' }}>退出登录</Link>
+            </div>
+
         )
     }
 }
